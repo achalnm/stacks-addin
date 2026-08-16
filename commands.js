@@ -30,7 +30,24 @@ const WATCHED_RECIPIENTS = [
 
 // ---------------------------------------------------------------------------
 
-Office.onReady();
+// Register the handler as early as possible AND again once Office is ready.
+// Belt and braces: on some clients Office.actions is not populated at parse time,
+// and a single guarded call can silently no-op, leaving the send event unhandled.
+function registerHandler() {
+  try {
+    if (typeof Office !== "undefined" && Office.actions && Office.actions.associate) {
+      Office.actions.associate("onMessageSendHandler", onMessageSendHandler);
+      console.log("Recipient Confirmation: handler associated.");
+    }
+  } catch (e) {
+    console.error("Recipient Confirmation: associate failed", e);
+  }
+}
+
+Office.onReady(function () {
+  console.log("Recipient Confirmation: Office.onReady fired.");
+  registerHandler();
+});
 
 /**
  * Entry point. Registered against OnMessageSend in the manifest.
@@ -117,7 +134,6 @@ function findWatchedRecipient(recipients) {
   return null;
 }
 
-// Required so the runtime can resolve the handler by name.
-if (typeof Office !== "undefined" && Office.actions && Office.actions.associate) {
-  Office.actions.associate("onMessageSendHandler", onMessageSendHandler);
-}
+// Also attempt registration immediately at parse time (covers clients that
+// populate Office.actions synchronously and may dispatch before onReady).
+registerHandler();
