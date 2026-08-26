@@ -17,15 +17,6 @@ const WATCHED_RECIPIENTS = [
     message:
       "You are sending to DARRAGLYNN NURSING HOME. " +
       "Please double check this is the correct nursing home before sending."
-  },
-  {
-    // TEMPORARY - proves the add-in still fires after this edit.
-    // Remove in a second commit once confirmed working.
-    address: "achalnm02@gmail.com",
-    label: "Achal personal (TEST)",
-    message:
-      "TEST WARNING. You are sending to achalnm02@gmail.com. " +
-      "Please confirm this is the correct recipient before sending."
   }
 ];
 
